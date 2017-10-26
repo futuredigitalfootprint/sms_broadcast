@@ -1,14 +1,21 @@
 <?php
 ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
-require __DIR__ . '/Twilio/autoload.php';
 use Twilio\Rest\Client;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+require __DIR__ . '/Twilio/autoload.php';
+require __DIR__ . '/PHPMailer/src/Exception.php';
+require __DIR__ . '/PHPMailer/src/PHPMailer.php';
+require __DIR__ . '/PHPMailer/src/SMTP.php';
+set_time_limit(0);
 $configContents  = file_get_contents('http://futuredigital.co.uk/form/config.json');
 $configJson = json_decode($configContents);
 $sid = $configJson->ssid;
 $token = $configJson->token;
 $key = $configJson->pinkey;
 $numbers = $configJson->numbers;
+$emails = $configJson->email;
 $client = new Client($sid, $token);
 if(isset($_POST["submit"])){
 	$text = $_POST["message"];
@@ -23,6 +30,27 @@ if(isset($_POST["submit"])){
 					)
 				);
 		}
+		$mail = new PHPMailer(true);
+		$mail->isSMTP();
+		//$mail->SMTPDebug = 2;
+		//$mail->Debugoutput = 'html';
+		$mail->SMTPSecure = 'ssl';
+		$mail->Host = "smtp.gmail.com";
+		$mail->SMTPAuth = true;
+		$mail->Username = $configJson->username;
+		$mail->Password = $configJson->password;
+		$mail->Port = 465; 
+		$mail->From = $configJson->username;
+		$mail->FromName = "Alert warning system";
+		for($y = 0; $y < count($emails); $y++){
+			$mail->addAddress($emails[$y]);
+		}
+		$mail->WordWrap = 50;
+		$mail->Subject = "Alert to All staff";
+		$mail->Body = $text;
+		if(!$mail->send()){
+			echo 'Mailer error: ' . $mail->ErrorInfo;
+		}		
 		header("Location:http://futuredigital.co.uk/form/sent.php");
 		exit();
 	}
