@@ -7,7 +7,7 @@ require __DIR__ . '/PHPMailer/src/Exception.php';
 require __DIR__ . '/PHPMailer/src/PHPMailer.php';
 require __DIR__ . '/PHPMailer/src/SMTP.php';
 set_time_limit(0);
-$configContents  = file_get_contents('http://futuredigital.co.uk/form/config.json');
+$configContents  = file_get_contents('***');
 $configJson = json_decode($configContents);
 $sid = $configJson->ssid;
 $token = $configJson->token;
@@ -49,7 +49,7 @@ if(isset($_POST["submit"])){
 		if(!$mail->send()){
 			echo 'Mailer error: ' . $mail->ErrorInfo;
 		}		
-		header("Location:http://futuredigital.co.uk/form/sent.php");
+		header("Location:***");
 		exit();
 	}
 }
