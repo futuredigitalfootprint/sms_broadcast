@@ -7,7 +7,7 @@ require __DIR__ . '/PHPMailer/src/Exception.php';				//Include PHPMailer for mai
 require __DIR__ . '/PHPMailer/src/PHPMailer.php';
 require __DIR__ . '/PHPMailer/src/SMTP.php';
 set_time_limit(0);												//Dont timeout if SMTP takes longer than 45 seconds to send
-$configContents  = file_get_contents('***');					//Json config file containing api keys and such
+$configContents  = file_get_contents('***');	//Json config file containing api keys and such
 $configJson = json_decode($configContents);						//Decode Json file into readable string
 $sid = $configJson->ssid;										//Twilio sid
 $token = $configJson->token;									//Twilio token api key
@@ -49,7 +49,7 @@ if(isset($_POST["submit"])){									//If submit button clicked
 		if(!$mail->send()){										//Send mail, thrwo error on failure
 			echo 'Mailer error: ' . $mail->ErrorInfo;
 		}		
-		header("Location:***");									//Redirect after sending
+		header("Location:***");	//Redirect after sending
 		exit();
 	}
 }
@@ -58,10 +58,11 @@ if(isset($_POST["submit"])){									//If submit button clicked
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="lib/css/emoji.css" rel="stylesheet">
 <title>Alert Broadcast</title>
 <link rel="stylesheet" type="text/css" href="view.css" media="all">
 <script type="text/javascript" src="view.js"></script>
-
 </head>
 <body id="main_body" >
 	
@@ -78,7 +79,7 @@ if(isset($_POST["submit"])){									//If submit button clicked
 					<li id="li_1" >
 						<label class="description" for="message">Message </label>
 							<div>
-								<textarea id="message" name="message" class="element textarea small" maxlength="320" value="<?php echo $text; ?>"></textarea> 
+								<textarea id="message" name="message" class="element textarea small" data-emojiable="true" data-emoji-input="unicode" maxlength="320" value="<?php echo $text; ?>"></textarea> 
 							</div> 
 					</li>
 					<li id="li_2" >
@@ -95,5 +96,20 @@ if(isset($_POST["submit"])){									//If submit button clicked
 		</form>
 	</div>
 	<img id="bottom" src="bottom.png" alt="">
+	<script src="jquery-3.2.1.min.js"></script>
+	<script src="lib/js/config.js"></script>
+	<script src="lib/js/util.js"></script>
+	<script src="lib/js/jquery.emojiarea.js"></script>
+	<script src="lib/js/emoji-picker.js"></script>
+	<script>
+      $(function() {
+        window.emojiPicker = new EmojiPicker({
+          emojiable_selector: '[data-emojiable=true]',
+          assetsPath: 'lib/img/',
+          popupButtonClasses: 'fa fa-smile-o'
+        });
+        window.emojiPicker.discover();
+      });
+    </script>
 </body>
 </html>
